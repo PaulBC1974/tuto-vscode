@@ -22,3 +22,6 @@ export const serializeFlow3D = async (payload: Flow3DFile): Promise<string> => {
   };
   return JSON.stringify(updated, null, 2);
 };
+
+export const verifyChecksum = (payload: Flow3DFile, computed: string): boolean =>
+  payload.checksum === computed;

@@ -5,6 +5,18 @@ import type { Flow3DAsset, Flow3DNode, Flow3DArrow, Flow3DLayer } from "../types
 
 export type ToolMode = "select" | "arrow" | "media";
 
+export interface FluxSnapshot {
+  nodes: Flow3DNode[];
+  arrows: Flow3DArrow[];
+  layers: Flow3DLayer[];
+  assets: Flow3DAsset[];
+  camera: {
+    position: [number, number, number];
+    target: [number, number, number];
+    fov: number;
+  };
+}
+
 interface FluxState {
   nodes: Flow3DNode[];
   arrows: Flow3DArrow[];
@@ -38,6 +50,7 @@ interface FluxState {
   addAsset: (asset: Flow3DAsset) => void;
   removeAsset: (assetId: string) => void;
   updateAssetMetadata: (assetId: string, metadata: Record<string, string>) => void;
+  loadSnapshot: (snapshot: FluxSnapshot) => void;
 }
 
 const defaultLayerId = uuidv4();
@@ -155,5 +168,13 @@ export const useFluxStore = create<FluxState>((set) => ({
       assets: state.assets.map((asset) =>
         asset.id === assetId ? { ...asset, metadata: { ...asset.metadata, ...metadata } } : asset
       )
-    }))
+    })),
+  loadSnapshot: (snapshot) =>
+    set({
+      nodes: snapshot.nodes,
+      arrows: snapshot.arrows,
+      layers: snapshot.layers,
+      assets: snapshot.assets,
+      camera: snapshot.camera
+    })
 }));
